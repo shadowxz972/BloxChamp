@@ -10,10 +10,11 @@
 
     --main-width: 350px;
     --main-height: 500px;
-    --main-bg-color: red;
-    --main-bg-image: url(../public/foto.png);
+    
+    --main-bg-color: rgba(23, 22, 22, 0.817);
     --main-border-radius: 10px;
     --main-box-shadow: 5px 20px 50px #000;
+    --main-padding: 10px;
 
     --label-color: #fff;
     --label-font-size: 2.3em;
@@ -21,12 +22,14 @@
     --label-font-weight: bold;
     --label-transition: .5s ease-in-out;
 
-    --input-width: 60%;
-    --input-height: 20px;
-    --input-bg-color: #e0dede;
-    --input-margin: 20px auto;
-    --input-padding: 10px;
-    --input-border-radius: 5px;
+    --text-field-width: 80%;
+    --text-field-height: 56px; /* Ajustado al tamaño predeterminado del TextField */
+    --text-field-margin: 5px auto;
+    --text-field-border-radius: 15px;
+    --text-field-font-color: white;
+    --text-field-bg-color: rgba(255, 0, 0, 0.466);
+    --text-field-label-color: white;
+    --text-field-hover-bg-color: rgba(255, 0, 0, 0.6);
 
     --button-width: 60%;
     --button-height: 40px;
@@ -49,6 +52,17 @@
     --login-label-transform: scale(.6);
     --chk-transform: translateY(-500px);
     --singup-label-transform: scale(.6);
+
+    --signup-width: 80%;
+    --signup-height: 10%;
+    --signup-background-color: rgb(165, 0, 0);
+    --signup-padding: 5px;
+    --signup-color: rgb(33, 29, 29);
+    --signup-border-radius: 5px;
+
+    --decoration-bar-width: 100%;
+    --decoration-bar-height: 1%;
+    --decoration-bar-bg: rgb(160, 13, 13);
 }
 
 body {
@@ -65,45 +79,60 @@ body {
 .main {
     width: var(--main-width);
     height: var(--main-height);
-    background: var(--main-bg-color);
     overflow: hidden;
-    background: var(--main-bg-image);
+    background: var(--main-bg-color);
     border-radius: var(--main-border-radius);
     box-shadow: var(--main-box-shadow);
+    padding: var(--main-padding);
 }
 
-#chk {
-    display: none;
-}
-
-.singup {
+.signup {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-label {
-    color: var(--label-color);
-    font-size: var(--label-font-size);
-    justify-content: var(--justify-center);
+
+
+/* Estilos para los TextField de Material-UI */
+/* Estilos para InputBase */
+.MuiInputBase-root {
+    width: var(--text-field-width);
+    margin: var(--text-field-margin);
     display: flex;
-    margin: var(--label-margin);
-    font-weight: var(--label-font-weight);
-    cursor: pointer;
-    transition: var(--label-transition);
+    justify-content: var(--justify-center);
+    align-items: center;
+    background-color: var(--text-field-bg-color);
+    border-radius: var(--text-field-border-radius);
+    color: var(--text-field-font-color);
+    padding: 10px; 
+    border: none; 
+    box-shadow: none; 
 }
 
-input {
-    width: var(--input-width);
-    height: var(--input-height);
-    background: var(--input-bg-color);
-    justify-content: var(--justify-center);
-    display: flex;
-    margin: var(--input-margin);
-    padding: var(--input-padding);
-    border: none;
-    outline: none;
-    border-radius: var(--input-border-radius);
+/* Cambiar color de etiqueta del InputBase */
+.MuiInputBase-input {
+    color: var(--text-field-font-color);
+    font-family: inherit; /* Hereda la fuente */
+    padding: 10px; /* Ajusta el espacio interno */
+}
+
+/* Color al pasar el mouse por encima */
+.MuiInputBase-root:hover {
+    background-color: var(--text-field-hover-bg-color);
+}
+
+/* Color al hacer foco (focus) */
+.Mui-focused .MuiInputBase-root {
+    outline: none; /* Elimina borde al foco */
+    background-color: var(--text-field-hover-bg-color);
+}
+
+/* Contenedor de los inputs */
+.input-container {
+    margin-bottom: 20px; /* Espacio entre los inputs */
+    width: var(--text-field-width);
+    margin-left: auto;
 }
 
 button {
@@ -150,4 +179,25 @@ button:hover {
 
 #chk:checked ~ .singup label {
     transform: var(--singup-label-transform);
+}
+
+.signup-button {
+    width: var(--signup-width);
+    margin: 0 auto;
+    height: var(--signup-height); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+    padding: var(--signup-padding); 
+    color:  var(--signup-color);
+    background-color: var(--signup-background-color); 
+    padding: var(--signup-padding);
+    border-radius: var(--signup-border-radius);
+}
+.decoration-bar{
+    width: var(--decoration-bar-width);
+    height: var(--decoration-bar-height);
+    background-color: var(--decoration-bar-bg);
+    margin: 2%;
 }
