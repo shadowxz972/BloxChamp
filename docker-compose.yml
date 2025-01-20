@@ -1,0 +1,35 @@
+
+services:
+  mysql:
+    image: mysql:8.0 # Puedes cambiar la versión según lo necesites
+    container_name: mysql_container
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"  # Exponer el puerto 3306 de MySQL al host
+    volumes:
+      - mysql_data:/var/lib/mysql  # Volumen para persistencia de datos
+    networks:
+      - backend_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+    env_file:
+    - backend/.env
+    - .env
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
