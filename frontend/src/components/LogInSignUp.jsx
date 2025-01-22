@@ -1,105 +1,53 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../css/LogInSignUp.css';
+import { InputAdornment } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import { InputBase } from "@mui/material";
+import PersonIcon from '@mui/icons-material/Person';
 
 function LogInSignUp() {
-    const [signupData, setSignupData] = useState({ username: '', email: '', password: '' });
-    const [loginData, setLoginData] = useState({ email: '', password: '' });
 
-    const handleSignupChange = (e) => {
-        setSignupData({ ...signupData, [e.target.name]: e.target.value });
-    };
-
-    const handleLoginChange = (e) => {
-        setLoginData({ ...loginData, [e.target.name]: e.target.value });
-    };
-
-    const handleSignupSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:5000/sing-up/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(signupData),
-            });
-            const data = await response.json();
-            console.log('Sign Up Response:', data);
-        } catch (error) {
-            console.error('Error during Sign Up:', error);
-        }
-    };
-
-    const handleLoginSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(`http://localhost:5000/log-in/?email=${loginData.email}&password=${loginData.password}`, {
-                method: 'GET',
-            });
-            const data = await response.json();
-            console.log('Log In Response:', data);
-        } catch (error) {
-            console.error('Error during Log In:', error);
-        }
-    };
 
     return (
         <div className="main">
-            <input type="checkbox" id="chk" aria-hidden="true" />
 
-            <div className="singup">
-                <form onSubmit={handleSignupSubmit}>
-                    <label htmlFor="chk" aria-hidden="true">Sign Up</label>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="User Name"
-                        value={signupData.username}
-                        onChange={handleSignupChange}
-                        required
-                    />
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={signupData.email}
-                        onChange={handleSignupChange}
-                        required
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={signupData.password}
-                        onChange={handleSignupChange}
-                        required
-                    />
-                    <button type="submit">Sign Up</button>
+            <div className="signup">
+                <h1 className='title'>log in</h1>
+                <div className='decoration-bar'></div>
+                <form>
+                    <div className="input-container">
+                        <InputBase
+                            placeholder="Account ID"
+                            type="password"
+                            startAdornment={
+                                <InputAdornment position="start">
+                                    <PersonIcon />
+                                </InputAdornment>
+                            }
+
+                        />;
+                    </div>
+                    <div className="input-container">
+                        <InputBase
+                            placeholder="Password"
+                            type="password"
+                            startAdornment={
+                                <InputAdornment position="start">
+                                    <LockIcon />
+                                </InputAdornment>
+                            }
+
+                        />;
+                    </div>
                 </form>
+
+                <div className="signup-button">
+                    <h4> Don't have an account or forgot your password? Click here </h4>
+                </div>
             </div>
 
-            <div className="login">
-                <form onSubmit={handleLoginSubmit}>
-                    <label htmlFor="chk" aria-hidden="true">Login</label>
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={loginData.email}
-                        onChange={handleLoginChange}
-                        required
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={loginData.password}
-                        onChange={handleLoginChange}
-                        required
-                    />
-                    <button type="submit">Log In</button>
-                </form>
-            </div>
+
+
         </div>
     );
 }
