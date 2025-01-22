@@ -1,10 +1,10 @@
-from sqlalchemy import Column,Integer,String,Boolean
+from sqlalchemy import Column,String,Boolean,BigInteger
 from sqlalchemy.orm import relationship
 from ...database.config import Base
 
 class Player(Base):
     __tablename__ = "player"
-    id = Column(Integer, primary_key=True, index=True, autoincrement=False)
+    id = Column(BigInteger, primary_key=True, index=True, autoincrement=False)
     name = Column(String(255))
     display_name = Column(String(255))
     description = Column(String(255))

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from ..models.User.schemas import UserCreate,UserResponse
 from ..models.User.crud import create_user
 from ..database.config import get_db
-from ..models.temp_phrase.crud import create_temp_phrase
+from ..models.TempPhrase.crud import create_temp_phrase
 
 
 router = APIRouter()

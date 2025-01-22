@@ -45,7 +45,22 @@ async def create_player(db: Session, data: PlayerCreate) -> PlayerResponse:
 
     db.add(player)
     db.commit()
-    return PlayerResponse.model_validate(player)
+    return PlayerResponse.model_validate(player, from_attributes=True)
+
+async def refresh_player_info(db: Session, player_id:int) -> PlayerResponse:
+    player:Player = db.query(Player).filter(Player.id == player_id).first()
+
+    if player is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Player not found")
+
+    player_info = await get_player_info(player.id)
+    player.name = player_info.name
+    player.display_name = player_info.display_name
+    player.description = player_info.description
+    player.image = player_info.image
+    db.commit()
+    return PlayerResponse.model_validate(player, from_attributes=True)
+
 
 def read_players(db:Session, skip:int = 0, limit:int = 50):
     return db.query(Player).offset(skip).limit(limit).all()

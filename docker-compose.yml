@@ -11,20 +11,29 @@ services:
       - mysql_data:/var/lib/mysql  # Volumen para persistencia de datos
     networks:
       - backend_network
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$MYSQL_ROOT_PASSWORD || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "5000:5000"
     env_file:
-    - backend/.env
+    - backend/.env.python
     - .env
     networks:
       - backend_network
+    volumes:
+      - ./backend/app/static:/app/app/static
 
 networks:
   backend_network:
