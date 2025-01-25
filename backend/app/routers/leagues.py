@@ -15,12 +15,12 @@ from ..models.Rule.crud import create_rule, get_rules
 router = APIRouter()
 
 
-@router.post("/leagues", response_model=LeagueResponse)
+@router.post("/", response_model=LeagueResponse)
 async def create_league_route(data: LeagueCreate, db=Depends(get_db)):
     return create_league(db, data)
 
 
-@router.get("/leagues/", response_model=List[LeagueResponse])
+@router.get("/", response_model=List[LeagueResponse])
 async def get_leagues_route(db=Depends(get_db)) -> List[LeagueResponse]:
     return get_leagues(db)
 
