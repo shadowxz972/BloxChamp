@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 
 from .model import Trophy
 from .schemas import TrophyCreate, TrophyResponse
-from ...config import ROOT_PATH
+from ...config import ROOT_PATH, DOMAIN
 from ...models.League.model import League
 
-domain = "http://localhost:5000"  # TODO: convertirlo en variable de entorno
+
 UPLOAD_FOLDER = ROOT_PATH / "static" / "images" / "trophies"
 Path(UPLOAD_FOLDER).mkdir(exist_ok=True, parents=True)
 
@@ -47,7 +47,7 @@ async def create_trophy(
     trophy = Trophy(
         id_league=data.id_league,
         name=data.name,
-        image=f"{domain}/static/images/trophies/{file_path.name}"
+        image=f"{DOMAIN}/static/images/trophies/{file_path.name}"
     )
     db.add(trophy)
     db.commit()

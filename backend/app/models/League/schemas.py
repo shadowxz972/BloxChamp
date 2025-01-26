@@ -12,6 +12,7 @@ class LeagueCreate(BaseModel):
 class LeagueResponse(BaseModel):
     id:int
     name:str
+    description:Optional[str]
     tier:int
     is_deleted:bool
     is_active:bool

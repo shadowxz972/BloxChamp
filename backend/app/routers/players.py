@@ -14,8 +14,8 @@ async def create_player_route(data: PlayerCreate,db:Session = Depends(get_db)) -
     return await create_player(db,data)
 
 @router.get("/", response_model=List[PlayerResponse])
-async def read_players_route(skip:int = 0, limit:int = 50,db:Session = Depends(get_db)):
-    return read_players(db,skip,limit)
+async def read_players_route(skip:int = 0, limit:int = 50,db:Session = Depends(get_db), hide_unverified:bool = False):
+    return read_players(db,skip,limit,hide_unverified)
 
 @router.get("/refresh-info", response_model=PlayerResponse)
 async def refresh_player_info_route(db:Session = Depends(get_db), user = Depends(get_current_user)):

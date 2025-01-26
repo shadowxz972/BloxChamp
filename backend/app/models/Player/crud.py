@@ -62,6 +62,8 @@ async def refresh_player_info(db: Session, player_id:int) -> PlayerResponse:
     return PlayerResponse.model_validate(player, from_attributes=True)
 
 
-def read_players(db:Session, skip:int = 0, limit:int = 50):
+def read_players(db:Session, skip:int = 0, limit:int = 50, hide_unverified:bool = False):
+    if hide_unverified:
+        return db.query(Player).filter(Player.is_verified == True).offset(skip).limit(limit).all()
     return db.query(Player).offset(skip).limit(limit).all()
 

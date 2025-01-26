@@ -27,3 +27,4 @@ SECRET_KEY: str = get_env_variable("SECRET_KEY")
 ALGORITHM: str = get_env_variable("ALGORITHM")
 MYSQL_ROOT_PASSWORD:str = get_env_variable("MYSQL_ROOT_PASSWORD",True)
 MYSQL_DATABASE:str = get_env_variable("MYSQL_DATABASE",True) or "BloxChamp"
+DOMAIN:str = get_env_variable("DOMAIN",True) or f"http://localhost:{PORT}"

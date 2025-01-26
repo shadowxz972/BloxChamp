@@ -4,7 +4,7 @@ from ..auth.functions import get_current_user
 from ..models.League.crud import create_league, get_leagues
 from ..models.League.schemas import LeagueCreate
 from ..database.config import get_db
-from typing import List
+from typing import List,Optional
 from ..models.Rule.schemas import RuleCreate, RuleResponse
 from ..models.League.schemas import LeagueResponse
 from sqlalchemy.orm import Session
@@ -46,7 +46,10 @@ async def create_trophy_route(
 
 @router.get("/trophy/{id_league}", response_model=TrophyResponse)
 async def get_trophy_route(id_league: int, db: Session = Depends(get_db)) -> TrophyResponse:
-    return get_trophy(db, id_league)
+    trophy = get_trophy(db, id_league)
+    if trophy is None:
+        raise HTTPException(status_code=404, detail="Trophy not found")
+    return trophy
 
 
 @router.post("/rules", response_model=RuleResponse)
