@@ -1,5 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
-from fastapi.params import Depends
+from fastapi import APIRouter, HTTPException, status, Response, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -13,10 +12,7 @@ router = APIRouter()
 def login(db: Session, user_credentials):
 
     user = db.query(User).filter(User.id_player == user_credentials.id_player).first()
-    print(f"usuario: {user}")
-    print(f"password: {user_credentials.password}")
-    print(f"hash: {user.hashed_password}")
-    print(f"comparacion: {verify_password(user_credentials.password, user.hashed_password)}")
+
     if not user or not verify_password(user_credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -27,13 +23,21 @@ def login(db: Session, user_credentials):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="El usuario esta eliminado"
         )
-    access_token = create_access_token(user)
-    return access_token
+    return create_access_token(user)
 
-@router.post("/login", response_model=Token)
-async def login_route(user_credentials:LoginForm,db:Session = Depends(get_db)):
+
+@router.post("/login")
+async def login_route(response:Response, user_credentials:LoginForm,db:Session = Depends(get_db)):
     access_token = login(db,user_credentials)
-    return {"access_token": access_token, "token_type": "bearer"}
+    response.set_cookie(
+        key="bloxchamp_session",
+        value=access_token,
+        httponly=True,
+        secure=False, #TODO: Activarlo cuando este configurado el frontend con https
+        samesite="strict",
+        max_age=3600,
+    )
+    return {"message": "Login successful"}
 
 
 @router.post("/token", response_model=Token)
@@ -47,3 +51,8 @@ async def login_for_access_token(data: OAuth2PasswordRequestForm = Depends(), db
     access_token = login(db, data)
     print(access_token)
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie("bloxchamp_session")
+    return {"message": "logout successful"}
