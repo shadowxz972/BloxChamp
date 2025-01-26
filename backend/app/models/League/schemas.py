@@ -6,6 +6,9 @@ class LeagueCreate(BaseModel):
     description:Optional[str]
     tier:int
 
+    class Config:
+        extra = "forbid"
+
 class LeagueResponse(BaseModel):
     id:int
     name:str

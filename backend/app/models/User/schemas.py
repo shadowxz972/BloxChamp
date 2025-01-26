@@ -6,6 +6,9 @@ class UserCreate(BaseModel):
     id_player:int
     password:Annotated[str,AfterValidator(validar_password)]
 
+    class Config:
+        extra = "forbid"
+
 
 class UserResponse(BaseModel):
     id:int

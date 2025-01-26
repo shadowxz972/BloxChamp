@@ -6,6 +6,7 @@ from ...models.TempPhrase.model import TempPhrase
 from ...models.TempPhrase.crud import get_player_description
 from ...auth.functions import hash_password,compare_normalized_strings
 from sqlalchemy.orm import Session
+from ...constants import valid_roles
 
 async def create_user(db:Session,data:UserCreate) -> User:
     existing_user = db.query(User).filter(User.id_player == data.id_player).first()
@@ -42,4 +43,16 @@ async def create_user(db:Session,data:UserCreate) -> User:
     return user
 
 
+def update_role_user(db:Session,id_user:int,role:str) -> UserResponse:
+    user = db.query(User).filter(User.id == id_user).first()
+    if user is None:
+        raise ValueError("User not found")
+
+    if role.lower() not in valid_roles:
+        raise ValueError("Invalid role")
+
+    user.role = role.lower()
+    db.commit()
+    db.refresh(user)
+    return UserResponse.model_validate(user, from_attributes=True)
 

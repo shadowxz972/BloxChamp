@@ -6,6 +6,9 @@ class RuleCreate(BaseModel):
     name:str
     content:Optional[str]
 
+    class Config:
+        extra = "forbid"
+
 class RuleResponse(BaseModel):
     id:int
     id_league:int

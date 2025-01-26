@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends
+
+from ..auth.functions import get_current_user
 from ..models.League.crud import create_league, get_leagues
 from ..models.League.schemas import LeagueCreate
 from ..database.config import get_db
@@ -16,7 +18,10 @@ router = APIRouter()
 
 
 @router.post("/", response_model=LeagueResponse)
-async def create_league_route(data: LeagueCreate, db=Depends(get_db)):
+async def create_league_route(data: LeagueCreate, db=Depends(get_db), user = Depends(get_current_user)):
+    if user.role not in ["admin","superadmin"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to do this")
+
     return create_league(db, data)
 
 
@@ -30,8 +35,12 @@ async def create_trophy_route(
         db: Session = Depends(get_db),
         id_league: int = Form(...),
         name: str = Form(...),
-        image: UploadFile = File(...)
+        image: UploadFile = File(...),
+        user = Depends(get_current_user)
 ) -> TrophyResponse:
+    if user.role not in ["admin","superadmin"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to do this")
+
     return await create_trophy(db, id_league, name, image)
 
 
@@ -41,7 +50,9 @@ async def get_trophy_route(id_league: int, db: Session = Depends(get_db)) -> Tro
 
 
 @router.post("/rules", response_model=RuleResponse)
-async def create_rule_route(data: RuleCreate, db: Session = Depends(get_db)) -> RuleResponse:
+async def create_rule_route(data: RuleCreate, db: Session = Depends(get_db), user = Depends(get_current_user)) -> RuleResponse:
+    if user.role not in ["admin","superadmin"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to do this")
     return create_rule(db, data)
 
 
