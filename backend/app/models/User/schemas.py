@@ -15,3 +15,7 @@ class UserResponse(BaseModel):
     id_player:int
     role:str
     is_deleted:bool
+
+class UserChangePassword(BaseModel):
+    old_password:Annotated[str,AfterValidator(validar_password)]
+    new_password:Annotated[str,AfterValidator(validar_password)]

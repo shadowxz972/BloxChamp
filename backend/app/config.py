@@ -3,7 +3,7 @@ from pathlib import Path
 
 def get_env_variable(name, optional=False):
     value = os.getenv(name)
-    print(f"{name} = {value}")
+    #print(f"{name} = {value}")
     if value is None and not optional:
         raise EnvironmentError(f"La variable de entorno '{name}' no esta definida.")
     return value
@@ -25,6 +25,7 @@ port_env = get_env_variable("PORT", True)
 PORT: int = int(port_env) if port_env else 5000
 SECRET_KEY: str = get_env_variable("SECRET_KEY")
 ALGORITHM: str = get_env_variable("ALGORITHM")
+SUPERADMIN_ID:str = get_env_variable("SUPERADMIN_ID")
 MYSQL_ROOT_PASSWORD:str = get_env_variable("MYSQL_ROOT_PASSWORD",True)
 MYSQL_DATABASE:str = get_env_variable("MYSQL_DATABASE",True) or "BloxChamp"
 DOMAIN:str = get_env_variable("DOMAIN",True) or f"http://localhost:{PORT}"

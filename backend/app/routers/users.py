@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..auth.functions import get_current_user
-from ..models.User.schemas import UserCreate,UserResponse
-from ..models.User.crud import create_user, update_role_user
+from ..models.User.schemas import UserCreate,UserResponse, UserChangePassword
+from ..models.User.crud import create_user, update_role_user, change_password
 from ..database.config import get_db
 from ..models.TempPhrase.crud import create_temp_phrase
 
@@ -50,3 +50,12 @@ async def update_role_route(user_id:int,role:str, db:Session=Depends(get_db), us
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
     return user
+
+@router.put("/change_password", response_model=UserResponse)
+async def change_own_password_route(data:UserChangePassword, db:Session=Depends(get_db), user = Depends(get_current_user)):
+    try:
+        return change_password(db,user.id,data)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Error: {e}")
