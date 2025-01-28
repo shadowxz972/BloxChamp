@@ -1,18 +1,31 @@
 import time
+from contextlib import asynccontextmanager
+from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from .routers.users import router as users_router
-from .config import ENV, PORT
-from .database.config import Base, engine
-from .routers.players import router as players_router
+
+from .config import ENV, PORT, SUPERADMIN_ID
+from .database.config import Base, engine, SessionLocal
+from .models.User.crud import create_default_superadmin
 from .routers.auth import router as auth_router
 from .routers.leagues import router as leagues_router
-from pathlib import Path
+from .routers.players import router as players_router
+from .routers.users import router as users_router
+
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app_fastapi: FastAPI):
+    print("Starting up...")
+    await create_default_superadmin(SessionLocal(), SUPERADMIN_ID)
+    yield
+    print("Shutting down...")
+
+
+app = FastAPI(lifespan=lifespan)
 
 static_path = "./backend/app/static" if ENV != "production" else "app/static"
 Path(static_path).mkdir(exist_ok=True)
@@ -33,7 +46,7 @@ async def root():
 directory_app = "app.main:app" if ENV == "production" else "backend.app.main:app"
 
 if __name__ == "__main__":
-    time.sleep(2) if ENV == "production" else None # para asegurar que se conecte el mysql
+    time.sleep(2) if ENV == "production" else None  # para asegurar que se conecte el mysql
     uvicorn.run(
         app=directory_app,
         host="0.0.0.0" if ENV == "production" else "127.0.0.1",

@@ -6,6 +6,9 @@ class TrophyCreate(BaseModel):
     id_league: int
     name: str
 
+    class Config:
+        extra = "forbid"
+
 
 class TrophyResponse(BaseModel):
     id: int

@@ -23,5 +23,5 @@ def create_league(db:Session, data:LeagueCreate) -> LeagueResponse:
 
     return LeagueResponse.model_validate(league)
 
-def get_leagues(db:Session) -> List[LeagueResponse]:
-    return db.query(League).filter(League.is_deleted == False).all()
+def get_leagues(db:Session) -> list[League]:
+    return db.query(League).filter(League.is_deleted == False).order_by(League.tier).all()

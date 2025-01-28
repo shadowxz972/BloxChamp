@@ -1,11 +1,10 @@
 from datetime import datetime, timezone, timedelta
 
-from fastapi import HTTPException, status, Depends
-from jwt import PyJWTError, ExpiredSignatureError, decode, encode
+from fastapi import HTTPException, status, Depends, Request
+from jwt import PyJWTError, decode, encode
 from sqlalchemy.orm import Session
 
-
-from .config import oauth2_scheme,pwd_context
+from .config import pwd_context, oauth2_scheme
 from ..config import SECRET_KEY, ALGORITHM
 from ..constants import ACCESS_TOKEN_EXPIRE_MINUTES
 from ..database.config import get_db
@@ -25,17 +24,22 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def verify_token(token: str) -> dict:
+def verify_token(token: str):
     """
-    Verifica el token JWT
+    Verifica el token JWT y retorna el user id
     """
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="No se ha podido validar las credenciales",
+    )
     try:
         payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except ExpiredSignatureError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
+        user_id: int = int(payload.get("sub"))
+        if not user_id:
+            raise credentials_exception
     except PyJWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise credentials_exception
+    return user_id
 
 
 # Funciones para manejar la verificacion del usuario
@@ -57,31 +61,30 @@ def create_access_token(user: User):
     return token
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="No se ha podido validar las credenciales",
-    )
+def get_current_user(request: Request, db: Session = Depends(get_db), token_oauth = Depends(oauth2_scheme)) -> User:
+    # Lee el token desde la cookie
+    token = request.cookies.get("bloxchamp_session") or token_oauth
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No se ha podido encontrar el token en la cookie"
+        )
 
-    try:
-        payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = int(payload.get("sub"))
-        if not user_id:
-            raise credentials_exception
-    except PyJWTError:
-        raise credentials_exception
+    user_id = verify_token(token)
 
+    # Buscar el usuario en la base de datos
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
-        raise credentials_exception
-    if not isinstance(user, User):
-        raise credentials_exception
-    if user.is_deleted:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="El usuario esta eliminado"
+            detail="No se ha podido encontrar el usuario"
+        )
+
+    if user.is_deleted:
+        raise HTTPException(
+            status_code=401,
+            detail="El usuario está eliminado"
         )
 
     return user
-

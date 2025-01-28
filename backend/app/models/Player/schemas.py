@@ -3,6 +3,9 @@ from pydantic import BaseModel
 class PlayerCreate(BaseModel):
     id:int
 
+    class Config:
+        extra = "forbid"
+
 class PlayerResponse(BaseModel):
     id:int
     name:str
