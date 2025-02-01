@@ -1,6 +1,8 @@
-from sqlalchemy import  Column, Integer, String, SmallInteger, Boolean
+from sqlalchemy import Column, String, SmallInteger, Boolean
 from sqlalchemy.orm import relationship
+
 from ...database.config import Base
+
 
 class League(Base):
     """
@@ -32,8 +34,8 @@ class League(Base):
     __tablename__ = "league"
 
     id = Column(SmallInteger, primary_key=True, index=True)
-    name = Column(String(255),index=True,unique=True)
-    tier = Column(SmallInteger,index=True, unique=True)
+    name = Column(String(255), index=True, unique=True)
+    tier = Column(SmallInteger, index=True, unique=True)
     description = Column(String(1000), default="Add a description")
     is_active = Column(Boolean, default=False)
     is_deleted = Column(Boolean, default=False)

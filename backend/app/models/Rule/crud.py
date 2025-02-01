@@ -1,11 +1,10 @@
-from typing import List
-
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from .model import Rule
 from .schemas import RuleCreate, RuleResponse
 from ..League.model import League
+
 
 def create_rule(db: Session, data: RuleCreate) -> RuleResponse:
     existing_rule = db.query(Rule).filter(Rule.name == data.name).first()

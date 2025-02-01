@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from fastapi import File
 
 
 class TrophyCreate(BaseModel):
@@ -14,7 +13,7 @@ class TrophyResponse(BaseModel):
     id: int
     id_league: int
     name: str
-    image:str
+    image: str
 
     class Config:
         from_attributes = True

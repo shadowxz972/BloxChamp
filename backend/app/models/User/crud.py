@@ -95,4 +95,3 @@ async def create_default_superadmin(db: Session, id_player):
     db.add(superadmin)
     db.commit()
     db.refresh(superadmin)
-

@@ -2,15 +2,15 @@ from fastapi import APIRouter, HTTPException, status, Response, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from ..auth.functions import verify_password, create_access_token
 from ..database.config import get_db
 from ..models.User.model import User
 from ..schemas.LoginForm.schemas import LoginForm, Token
-from ..auth.functions import verify_password,create_access_token
 
 router = APIRouter()
 
-def login(db: Session, user_credentials):
 
+def login(db: Session, user_credentials):
     user = db.query(User).filter(User.id_player == user_credentials.id_player).first()
 
     if not user or not verify_password(user_credentials.password, user.hashed_password):
@@ -27,13 +27,13 @@ def login(db: Session, user_credentials):
 
 
 @router.post("/login")
-async def login_route(response:Response, user_credentials:LoginForm,db:Session = Depends(get_db)):
-    access_token = login(db,user_credentials)
+async def login_route(response: Response, user_credentials: LoginForm, db: Session = Depends(get_db)):
+    access_token = login(db, user_credentials)
     response.set_cookie(
         key="bloxchamp_session",
         value=access_token,
         httponly=True,
-        secure=False, #TODO: Activarlo cuando este configurado el frontend con https
+        secure=False,  # TODO: Activarlo cuando este configurado el frontend con https
         samesite="strict",
         max_age=3600,
     )
@@ -49,6 +49,7 @@ async def login_for_access_token(data: OAuth2PasswordRequestForm = Depends(), db
     data = LoginForm(id_player=int(data.username), password=data.password)
     access_token = login(db, data)
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.post("/logout")
 async def logout(response: Response):

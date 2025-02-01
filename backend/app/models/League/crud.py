@@ -1,10 +1,11 @@
-from sqlalchemy.orm import Session
-from .schemas import LeagueCreate, LeagueResponse
-from .model import League
 from fastapi import HTTPException, status
-from typing import List
-def create_league(db:Session, data:LeagueCreate) -> LeagueResponse:
+from sqlalchemy.orm import Session
 
+from .model import League
+from .schemas import LeagueCreate, LeagueResponse
+
+
+def create_league(db: Session, data: LeagueCreate) -> LeagueResponse:
     existing_league = db.query(League).filter(League.name == data.name).first()
     existing_tier = db.query(League).filter(League.tier == data.tier).first()
     if existing_league:
@@ -23,5 +24,6 @@ def create_league(db:Session, data:LeagueCreate) -> LeagueResponse:
 
     return LeagueResponse.model_validate(league)
 
-def get_leagues(db:Session) -> list[League]:
+
+def get_leagues(db: Session) -> list[League]:
     return db.query(League).filter(League.is_deleted == False).order_by(League.tier).all()

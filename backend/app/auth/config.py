@@ -6,4 +6,3 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Esquema para extraer el token desde el cliente
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
-

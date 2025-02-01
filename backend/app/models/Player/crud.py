@@ -27,8 +27,6 @@ async def get_player_info(player_id: int) -> PlayerInfo:
     )
 
 
-
-
 async def create_player(db: Session, data: PlayerCreate) -> PlayerResponse:
     existing_player = db.query(Player).filter(Player.id == data.id).first()
     if existing_player:
@@ -47,8 +45,9 @@ async def create_player(db: Session, data: PlayerCreate) -> PlayerResponse:
     db.commit()
     return PlayerResponse.model_validate(player, from_attributes=True)
 
-async def refresh_player_info(db: Session, player_id:int) -> PlayerResponse:
-    player:Player = db.query(Player).filter(Player.id == player_id).first()
+
+async def refresh_player_info(db: Session, player_id: int) -> PlayerResponse:
+    player: Player = db.query(Player).filter(Player.id == player_id).first()
 
     if player is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Player not found")
@@ -62,8 +61,7 @@ async def refresh_player_info(db: Session, player_id:int) -> PlayerResponse:
     return PlayerResponse.model_validate(player, from_attributes=True)
 
 
-def read_players(db:Session, skip:int = 0, limit:int = 50, hide_unverified:bool = False):
+def read_players(db: Session, skip: int = 0, limit: int = 50, hide_unverified: bool = False):
     if hide_unverified:
         return db.query(Player).filter(Player.is_verified == True).offset(skip).limit(limit).all()
     return db.query(Player).offset(skip).limit(limit).all()
-

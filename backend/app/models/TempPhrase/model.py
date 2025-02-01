@@ -1,6 +1,8 @@
 from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer
-from ...database.config import Base
 from sqlalchemy.orm import relationship
+
+from ...database.config import Base
+
 
 class TempPhrase(Base):
     __tablename__ = "temp_phrase"

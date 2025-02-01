@@ -61,7 +61,7 @@ def create_access_token(user: User):
     return token
 
 
-def get_current_user(request: Request, db: Session = Depends(get_db), token_oauth = Depends(oauth2_scheme)) -> User:
+def get_current_user(request: Request, db: Session = Depends(get_db), token_oauth=Depends(oauth2_scheme)) -> User:
     # Lee el token desde la cookie
     token = request.cookies.get("bloxchamp_session") or token_oauth
     if not token:

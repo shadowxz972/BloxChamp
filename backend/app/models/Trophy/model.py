@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, SmallInteger
-from ...database.config import Base
 from sqlalchemy.orm import relationship
+
+from ...database.config import Base
+
 
 class Trophy(Base):
     __tablename__ = "trophy"

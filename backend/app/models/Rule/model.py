@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, SmallInteger
 from sqlalchemy.orm import relationship
+
 from ...database.config import Base
+
 
 class Rule(Base):
     __tablename__ = "rule"

@@ -1,6 +1,8 @@
-from sqlalchemy import Column,String,Boolean,BigInteger
+from sqlalchemy import Column, String, Boolean, BigInteger
 from sqlalchemy.orm import relationship
+
 from ...database.config import Base
+
 
 class Player(Base):
     __tablename__ = "player"

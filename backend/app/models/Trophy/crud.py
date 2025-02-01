@@ -9,7 +9,6 @@ from .schemas import TrophyCreate, TrophyResponse
 from ...config import ROOT_PATH, DOMAIN
 from ...models.League.model import League
 
-
 UPLOAD_FOLDER = ROOT_PATH / "static" / "images" / "trophies"
 Path(UPLOAD_FOLDER).mkdir(exist_ok=True, parents=True)
 
@@ -54,6 +53,7 @@ async def create_trophy(
     db.refresh(trophy)
 
     return TrophyResponse.model_validate(trophy)
+
 
 def get_trophy(db: Session, id_league: int) -> TrophyResponse:
     return db.query(Trophy).filter(Trophy.id_league == id_league).first()
