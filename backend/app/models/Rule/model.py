@@ -8,7 +8,7 @@ class Rule(Base):
     __tablename__ = "rule"
 
     id = Column(Integer, primary_key=True, index=True)
-    id_league = Column(SmallInteger, ForeignKey("league.id"))
+    id_league = Column(Integer, ForeignKey("league.id"))
     name = Column(String(255), nullable=False)
     content = Column(String(500))
     is_deleted = Column(Boolean, default=False)

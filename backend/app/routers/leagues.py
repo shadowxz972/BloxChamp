@@ -22,7 +22,10 @@ async def create_league_route(data: LeagueCreate, db=Depends(get_db), user=Depen
     if user.role not in ["admin", "superadmin"]:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have permission to do this")
 
-    return create_league(db, data)
+    try:
+        return create_league(db, data)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error: {e}")
 
 
 @router.get("/", response_model=List[LeagueResponse])

@@ -13,7 +13,7 @@ from .routers.auth import router as auth_router
 from .routers.leagues import router as leagues_router
 from .routers.players import router as players_router
 from .routers.users import router as users_router
-
+from .routers.tournaments import router as tournaments_router
 Base.metadata.create_all(bind=engine)
 
 
@@ -36,8 +36,7 @@ app.include_router(players_router, prefix="/players", tags=["players"])
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 
 app.include_router(leagues_router, prefix="/leagues", tags=["leagues"])
-
-
+app.include_router(tournaments_router, prefix="/tournaments", tags=["tournaments"])
 @app.get("/")
 async def root():
     return {"message": "Bienvenido a BloxChamp!"}
