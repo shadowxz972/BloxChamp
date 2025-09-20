@@ -1,3 +1,3 @@
 # BloxChamp
 
-in development...
+postergado hasta tener un frontend developer xd
